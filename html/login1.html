@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Signup</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f1f1f1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            position: relative;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            width: 100%;
+            max-width: 1000px;
+            height: 600px;
+            margin: auto;
+        }
+
+        .form-container {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .sign-in-container,
+        .sign-up-container {
+            left: 0;
+            width: 50%;
+            z-index: 2;
+        }
+
+        .sign-up-container {
+            transform: translateX(100%);
+            z-index: 1;
+        }
+
+        .overlay-container {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+            transition: transform 0.6s ease-in-out;
+            z-index: 100;
+        }
+
+        .overlay {
+            background: #4b66fc;
+            background: -webkit-linear-gradient(to right, #4b66fc, #4b66fc);
+            background: linear-gradient(to right, #4b66fc, #4b66fc);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 0 0;
+            color: #fff;
+            position: relative;
+            left: -100%;
+            height: 100%;
+            width: 200%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-panel {
+            position: absolute;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 40px;
+            text-align: center;
+            width: 50%;
+            height: 100%;
+            transform: translateX(0);
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .overlay-left {
+            transform: translateX(-20%);
+        }
+
+        .overlay-right {
+            right: 0;
+            transform: translateX(0);
+        }
+
+        .overlay-panel h1 {
+            font-size: 40px;
+        }
+
+        .overlay-panel p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .ghost {
+            background: transparent;
+            border: 1px solid #fff;
+            padding: 10px 20px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        form {
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 0 50px;
+            height: 100%;
+            text-align: center;
+        }
+
+        form h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        form input {
+            border: 1px solid #ccc;
+            padding: 12px;
+            margin-bottom: 15px;
+            width: 100%;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form .email-input,
+        form .password-input {
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        form button {
+            background-color: #4b66fc;
+            background: -webkit-linear-gradient(to right, #4b66fc, #4b66fc);
+            background: linear-gradient(to right, #4b66fc, #4b66fc);
+            color: #fff;
+            border: none;
+            padding: 15px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        form button:hover {
+            background-color: #4b66fc;
+        }
+
+        .right-panel-active .sign-in-container {
+            transform: translateX(100%);
+        }
+
+        .right-panel-active .sign-up-container {
+            transform: translateX(0);
+        }
+
+        .captcha {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .captcha-form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .captcha-input {
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .captcha-refresh {
+            cursor: pointer;
+            color: blue;
+            margin-left: 10px;
+        }
+
+        .preview {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            width: 100%;
+            text-align: center;
+            height: 40px;
+            line-height: 40px;
+            letter-spacing: 8px;
+            border: 1px solid #888;
+            border-radius: 5px;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="container">
+        <!-- Signup Form -->
+        <div class="form-container sign-up-container">
+            <form id="signupForm" action="#" method="post">
+                <h1>Create Account</h1>
+                <input type="text" placeholder="Name" />
+                <input type="email" placeholder="Email" />
+                <input type="password" placeholder="Password" />
+                <input type="confirm-pasword" placeholder="confirm-pasword"/>
+                <div class="captcha">
+                    <div class="preview" id="generated-captcha"></div>
+                    <div class="captcha-form">
+                        <input type="text" id="captcha-form" placeholder="Captcha" class="captcha-input">
+                        <img src="images/refresh.jpg" height="40px" onclick="generate()">
+                    </div>
+                </div>
+                <button type="button" onclick="onSignUp()">Sign Up</button>
+            </form>
+        </div>
+
+        <!-- Signin Form -->
+        <div class="form-container sign-in-container">
+            <form id="signInForm" action="#" method="post">
+                <h1>Sign In</h1>
+                <input type="email" placeholder="Email" class="email-input" />
+                <input type="password" placeholder="Password" class="password-input" />
+                <div class="captcha">
+                    <div class="preview" id="generated-captcha-signin"></div>
+                    <div class="captcha-form">
+                        <input type="text" id="captcha-form-signin" placeholder="Captcha" class="captcha-input">
+                        <img src="images/refresh.jpg" height="40px" onclick="generateSignIn()">
+                    </div>
+                </div>
+                <button type="button" onclick="onSignIn()">Sign In</button>
+            </form>
+        </div>
+
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>To keep connected with us, please log in with your personal info</p>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start your journey with us</p>
+                <button class="ghost" id="signUp">Sign up</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <form id="signInForm" action="verify.php" method="post">
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const signUpButton = document.getElementById('signUp');
+            const signInButton = document.getElementById('signIn');
+            const container = document.getElementById('container');
+
+            signUpButton.addEventListener('click', () => {
+                container.classList.add('right-panel-active');
+            });
+
+            signInButton.addEventListener('click', () => {
+                container.classList.remove('right-panel-active');
+            });
+
+            let captcha;
+            let alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let status = document.querySelector('.captcha .preview');
+
+            function generate() {
+                let captchaText = '';
+                for (let i = 0; i < 6; i++) {
+                    captchaText += alphabets.charAt(Math.floor(Math.random() * alphabets.length));
+                }
+                captcha = captchaText;
+                status.innerText = captcha;
+                document.getElementById("captcha-form").value = '';
+            }
+
+            function generateSignIn() {
+                let captchaText = '';
+                for (let i = 0; i < 6; i++) {
+                    captchaText += alphabets.charAt(Math.floor(Math.random() * alphabets.length));
+                }
+                captcha = captchaText;
+                document.getElementById("generated-captcha-signin").innerText = captcha;
+                document.getElementById("captcha-form-signin").value = '';
+            }
+
+            function onSignUp() {
+                const signUpForm = document.getElementById('signupForm');
+                const captchaResponse = grecaptcha.getResponse();
+
+                if (!captchaResponse.length > 0) {
+                    alert("Please complete the captcha");
+                    return;
+                }
+
+                const formData = new FormData(signUpForm);
+                formData.append('g-recaptcha-response', captchaResponse);
+
+                fetch('/verify-captcha', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            // If captcha verification successful, continue with signup process
+                            signUpForm.submit(); // Submit the form
+                        } else {
+                            alert("Captcha verification failed. Please try again.");
+                            // Reset the captcha
+                            grecaptcha.reset();
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error verifying captcha:', err);
+                        alert("An error occurred while verifying captcha. Please try again later.");
+                        // Reset the captcha
+                        grecaptcha.reset();
+                    });
+            }
+
+            function check() {
+                let userValue = document.getElementById("entered-captcha").value;
+                if (userValue === captcha) {
+                    status.innerText = "Correct!!";
+                } else {
+                    status.innerText = "Try Again!!";
+                    document.getElementById("entered-captcha").value = '';
+                }
+            }
+
+            function checkSignIn() {
+                let userValue = document.getElementById("entered-captcha-signin").value;
+                if (userValue === captcha) {
+                    status.innerText = "Correct!!";
+                } else {
+                    status.innerText = "Try Again!!";
+                    document.getElementById("entered-captcha-signin").value = '';
+                }
+            }
+
+            function onSignIn() {
+                const signInForm = document.getElementById('signInForm');
+                const captchaResponse = grecaptcha.getResponse();
+
+                if (!captchaResponse) {
+                    alert('Captcha not complete');
+                    return;
+                }
+
+                const formData = new FormData(signInForm);
+                formData.append('g-recaptcha-response', captchaResponse);
+
+                fetch('http://localhost:3000/signin', {
+                    method: 'POST',
+                    body: formData,
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.captchaSuccess) {
+                            console.log('Signin successful');
+                        } else {
+                            console.log('Signin failed');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('There has been a problem with your fetch operation:', error);
+                    });
+            }
+            // Refresh Captcha
+            function refreshCaptcha() {
+                generate(); // Call your function to generate captcha
+                generateSignIn(); // Call your function to generate captcha for sign in
+            }
+
+            // Initial generation of captcha
+            generate();
+            generateSignIn();
+            
+        });
+    </script>
+</body>
+
+</html>
