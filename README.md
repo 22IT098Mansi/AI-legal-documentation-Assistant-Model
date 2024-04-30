@@ -1,1 +1,4 @@
 # AI-legal-documentation-Assistant-Model
+Negotiable instruments which include the likes of promissory notes, bills of exchange, cheques, etc. play a crucial role in facilitating agreements and financial transactions. The increasing complexity and volume in the exchange of these negotiable instruments creates a demand for efficient and accurate generation of the required legal documents.
+
+With the help of this AI-powered legal document drafter, we aim to design a tool to streamline the creation of these documents while ensuring high standards of accuracy and efficiency. The goal is to use machine learning algorithms to analyze user input specifications, produce customized documents that comply with applicable laws and regulations, include standard clauses, and provide the user with simplified information about negotiable instruments.
